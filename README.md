@@ -14,6 +14,13 @@ pip install -U pip
 
 pip install -r requirements_dev.txt
 
+## start
+
+cd things_web/things_web
+
+source ~/venvs/things_web/bin/activate
+
+python things_web.py
 
 ## configuration
 
