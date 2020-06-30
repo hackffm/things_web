@@ -10,8 +10,6 @@ python3 -m venv ~/venvs/things_web
 
 source ~/venvs/things_web/bin/activate
 
-pwd
-
 pip install -U pip
 
 pip install -r requirements_dev.txt
