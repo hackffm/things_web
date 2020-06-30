@@ -1,0 +1,4 @@
+netifaces
+pygame
+pyserial
+tornado

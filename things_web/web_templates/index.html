@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Labyrinth</title>
+</head>
+<body>
+<label type="text" id="infoIP" name="IP">websocket ws://{{ ip }}:9000/websocket</label><br>
+<label>e.g.</label><br>
+<label>ws = new WebSocket("ws://{{ ip }}:9000/websocket")</label><br>
+<p>
+<label>ws.send('Node1:door1:c)</label><br>
+<label>or</label><br>
+<label>ws.send('{ "node" :"Node1","thing": {"id":"door1", "command": "c" }}')</label><br>
+</p>
+<hr>
+<button id="btm_things" class="button">things</button>
+<script>
+document.getElementById("btm_things").addEventListener("click", function() {
+    window.location.href = '/things';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+from .handler_index_page import HandlerIndexPage
+from .handler_things_page import HandlerThingsPage

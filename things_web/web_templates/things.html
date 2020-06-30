@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <script>
+        var ip_first = '{{ip_first}}';
+        var state_ws = 'disconnected';
+    </script>
+</head>
+<body>
+<p>{{ title }}</p>
+<label id="connection_state"></label>
+<hr>
+<p>Number of active things {{  things_qty }}</p>
+<p>Verified</p>
+<table>
+{% for thing in things_verified %}
+<tr>
+    <td>Node:</td>
+    <td>{{ thing[0] }}</td>
+    <td>Thing: </td>
+    <td>{{ thing[1] }}</td>
+    <td> command :</td>
+    <td>
+        <input type='text' id='{{ thing[0] }}_{{ thing[1] }}' />
+    </td>
+    <td>
+        <button id="btm_{{ thing[0] }}_{{ thing[1] }}" class="button">send</button>
+    </td>
+    <td><label id="reply_{{ thing[0] }}_{{ thing[1] }}"></label> </td>
+</tr>
+{% end %}
+<br>
+{% for node in nodes_verified %}
+<tr>
+    <td>Node: </td>
+    <td>{{ node[0] }}</td>
+    <td>Message:</td>
+    <td><label id="reply_{{ node[0] }}"></label> </td>
+</tr>
+{% end %}
+</table>
+<hr>
+<table>
+<p>Not Verified</p>
+{% for node in nodes_not_verified %}
+<tr>
+    <td>Thing: </td>
+    <td>{{ node[0] }}</td>
+</tr>
+{% end %}
+</table>
+<script>
+window.onload = function() {
+    ws = new WebSocket("ws://" + ip_first + ":{{ port }}/websocket");
+    ws.onmessage = function (e) {
+        try {
+            message = e.data
+            if (message.includes(':')) {
+                message = message.split(":");
+                if (message.length == 3){
+                    document.getElementById('reply_' + message[0] + '_' + message[1]).innerText = message[2];
+                }
+                if (message.length == 2){
+                    document.getElementById('reply_' + message[0]).innerText = message[1];
+                }
+            } else {
+                console.log(message);
+            }
+        } catch (err) {
+            console.log('onmessage error ' + err.message);
+        }
+    };
+    ws.onopen = function () {
+        console.log('WS opened');
+        document.getElementById('connection_state').innerText = 'connected';
+    }
+    ws.onclose = function () { document.getElementById('connection_state').innerText = 'warning websocket disconnected !';}
+}
+{% for thing in things_verified %}
+var e_{{ thing[0] }}_{{ thing[1] }} = document.getElementById("{{ thing[0] }}_{{ thing[1] }}");
+document.getElementById("btm_{{ thing[0] }}_{{ thing[1] }}").addEventListener("click", function() {
+    send_thing_command("{{ thing[0] }}", "{{ thing[1] }}", e_{{ thing[0] }}_{{ thing[1] }}.value);
+});
+{% end %}
+function send_thing_command(n_name, t_name, c_command, ){
+    console.log("send command { \"node\" :\"" + n_name + "\",\"thing\": {\"id\":\"" + t_name + "\", \"command\": \"" + c_command + "\" }}");
+    ws.send("{ \"node\" :\"" + n_name + "\",\"thing\": {\"id\":\"" + t_name + "\", \"command\": \"" + c_command + "\" }}");
+}
+</script>
+</body>
+</html>
